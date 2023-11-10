@@ -13,6 +13,10 @@ const Login = () => {
           </div>
           <div className="md:w-1/2 flex justify-start mt-5 md:justify-end w-full md:w-1/2">
             <div className="shadow-md flex-auto max-w-sm p-10 pb-20">
+              <div className="font-sans flex items-center justify-center mb-10">
+                <h1 className="font-roboto font-bold text-2xl ">Login</h1>
+              </div>
+
               <div className="w-full">
                 <div className="font-bold h-6 mt-3 text-gray-600 text-xs leading-8 uppercase">
                   <span className="text-red-400 mr-1">*</span> Email
