@@ -1,9 +1,11 @@
-import LoginPage from "./Components/LoginPage/LoginPage";
+import MainNavigation from "./Navigation/MainNavigation";
 
 function App() {
   return (
     <>
-      <LoginPage />
+      <div className="w-full h-screen bg-white flex justify-center items-center">
+        <MainNavigation />
+      </div>
     </>
   );
 }
