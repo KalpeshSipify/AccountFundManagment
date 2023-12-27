@@ -4,6 +4,7 @@ import PrivateRoute from "../../PrivateRoute/PrivateRoute"; // Importing Private
 import { getAuthenticatedUser } from "../../CognitoServices/GetCurrentAuthenticatUser"; // Importing function for fetching authenticated user
 import { IsAuthenticateContext } from "../../Context/IsAuthenticateContext"; // Importing IsAuthenticateContext
 import { ReCallContext } from "../../Context/ReCallContext"; // Importing ReCallContext
+import FundTabel from "../Components/FundTable/FundTabel";
 
 // Lazily loaded components
 const LoginPage = lazy(() => import("../Components/LoginPage/LoginPage"));
@@ -45,7 +46,7 @@ const MainNavigation = () => {
         {/* Private route for user dashboard */}
         <Route path="/User" element={<PrivateRoute />}>
           {/* Route for the User Dashboard */}
-          <Route path="/User/Dashboard" element={<Dashboard />} />
+          <Route path="/User/Dashboard/*" element={<Dashboard />} />
         </Route>
       </Routes>
     </Suspense>

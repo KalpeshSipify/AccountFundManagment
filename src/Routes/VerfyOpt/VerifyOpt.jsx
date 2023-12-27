@@ -78,14 +78,13 @@ const VerifyOpt = () => {
     setAttempt((prevAttempt) => prevAttempt + 1);
     // if attempt is less than or equal to 3
     if (Attempt <= 1) {
-      console.log("fire...");
       try {
         setLoader(true); // Activate loader before verification
 
         const { answer } = inputData; // Destructure the input data
 
         const verifyOptResult = await VerifyOptHandler(cognitoUser, answer);
-        const { success, message } = verifyOptResult;
+        const { success } = verifyOptResult;
 
         if (success) {
           setreCall((prev) => !prev); // Toggle the recall flag for re-call
@@ -94,8 +93,6 @@ const VerifyOpt = () => {
             navigate("/User/Dashboard"); // Navigate after a delay upon successful verification
             setLoader(false); // Deactivate loader after navigation
           }, 1500); // Reduced delay for responsiveness
-
-          console.log(message); // Log verification success message
         } else if (!success) {
           setisValidOtp(false); // setting the isValidOtp  to false
           // dealy for 1.5s
