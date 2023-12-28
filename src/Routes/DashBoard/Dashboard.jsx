@@ -1,6 +1,7 @@
-import { Link, Outlet, Route, Routes } from "react-router-dom";
-import FundTabel from "../../Components/FundTable/FundTabel";
+import { Route, Routes } from "react-router-dom";
 import Menu from "../../Components/Menu/Menu";
+import UpiFundForm from "../../Components/AddUpiFundForm/UpiFundForm";
+import FundTabel from "../../Components/FundTable/FundTabel";
 
 const Dashboard = () => {
   return (
@@ -12,8 +13,9 @@ const Dashboard = () => {
               <Menu />
             </div>
           </div>
-          <div className="w-full sm:w-4/5 bg-white">
+          <div className="w-full sm:w-4/5 bg-white flex flex-col items-center justify-center sm:items-start sm:justify-start sm:pl-10 sm:pt-10">
             <Routes>
+              <Route path="/Order" element={<UpiFundForm />} />
               <Route path="/FundTable" element={<FundTabel />} />
             </Routes>
           </div>

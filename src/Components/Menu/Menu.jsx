@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { IsAuthenticateContext } from "../../../Context/IsAuthenticateContext";
 import { LogOutHandler } from "../../../CognitoServices/SignOut";
 import Spinner from "../Spinner/Spinner";
+import chatimg from "../../assets/chat.png";
+import notificationimg from "../../assets/notification.png";
 
 const Menu = () => {
   // using use navigate hook for navigation to another pagfe
@@ -84,7 +86,7 @@ const Menu = () => {
                     <i className="bx bx-home"></i>
                   </span>
                   <span className="text-sm font-medium">
-                    <Link to="/User/Dashboard/FundTable">Order</Link>
+                    <Link to="/User/Dashboard/Order">Order</Link>
                   </span>
                 </div>
               </li>
@@ -118,13 +120,34 @@ const Menu = () => {
                   </span>
                 </div>
               </li>
+
               <li>
-                <div className="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
+                <div className="flex  flex-row items-center  h-12  text-gray-500 hover:text-gray-800 mt-56">
+                  <div className="flex  px-14 ">
+                    <div className="flex items-center justify-center h-12 w-9  ">
+                      <img
+                        src={chatimg}
+                        alt="First Image"
+                        className="max-h-full max-w-full cursor-pointer"
+                      />
+                    </div>
+                    <div className="flex items-center justify-center h-12 w-9 ml-2 ">
+                      <img
+                        src={notificationimg}
+                        alt="Second Image"
+                        className="max-h-full max-w-full cursor-pointer"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div className="flex flex-row items-center h-12  text-gray-500 hover:text-gray-800">
                   <span className="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400">
                     <i className="bx bx-home"></i>
                   </span>
                   <span className="text-sm font-medium">
-                    <Link to="/User/Dashboard/FundTable">Help & Support</Link>
+                    <a>Help & Support</a>
                   </span>
                 </div>
               </li>

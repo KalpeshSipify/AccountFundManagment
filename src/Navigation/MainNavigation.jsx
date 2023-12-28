@@ -5,6 +5,7 @@ import { getAuthenticatedUser } from "../../CognitoServices/GetCurrentAuthentica
 import { IsAuthenticateContext } from "../../Context/IsAuthenticateContext"; // Importing IsAuthenticateContext
 import { ReCallContext } from "../../Context/ReCallContext"; // Importing ReCallContext
 import FundTabel from "../Components/FundTable/FundTabel";
+import Spinner from "../Components/Spinner/Spinner";
 
 // Lazily loaded components
 const LoginPage = lazy(() => import("../Components/LoginPage/LoginPage"));
@@ -13,6 +14,9 @@ const Dashboard = lazy(() => import("../Routes/DashBoard/Dashboard"));
 
 const MainNavigation = () => {
   const navigate = useNavigate(); // Using the useNavigate hook to handle navigation
+
+  // state for spinner loader
+  const [Loader, setLoader] = React.useState(true);
 
   // Context  - - - - - - - - - - - - - - - - - - - -- - - - - - - - - --
   const { setIsAuth } = React.useContext(IsAuthenticateContext); // Accessing setIsAuth function from IsAuthenticateContext
@@ -24,8 +28,11 @@ const MainNavigation = () => {
     const result = await getAuthenticatedUser(); // Fetching authenticated user details
     const { success } = result; // Destructuring success from the result
     if (success) {
+      setLoader(false); // setting loader to false
       setIsAuth(true); // Setting isAuthenticated to true if user is authenticated
       navigate("/User/Dashboard"); // Navigating to the Dashboard upon successful authentication
+    } else {
+      setLoader(false); // setting loader to false
     }
   };
 
@@ -33,6 +40,14 @@ const MainNavigation = () => {
   useEffect(() => {
     GetUser();
   }, [reCall]);
+
+  if (Loader) {
+    return (
+      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-black bg-opacity-40">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
