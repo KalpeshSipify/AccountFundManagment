@@ -4,21 +4,20 @@ import loginImg from "../../assets/LoginImg.png";
 import { useNavigate } from "react-router-dom";
 import { CognitoUserContext } from "../../../Context/CognitoUserContext";
 import { EmailLoginHandler } from "../../../CognitoServices/EmailLogin";
-import Spinner from "../../Components/Spinner/Spinner";
+import MemoizedSpinner from "../../Components/Spinner/Spinner";
 
 const Login = () => {
-  //  state  - - - - - - - - - - - - - - - - - - - -- - - - - - - - - --
-  // state for spinner loader
-  const [Loader, setLoader] = React.useState(false);
-  // state for email not registered to cognito
-  const [isEmailRegister, setisEmailRegister] = React.useState(true);
+  //  state
+  const [Loader, setLoader] = React.useState(false); // state for spinner loader
+
+  const [isEmailRegister, setisEmailRegister] = React.useState(true); // state for email not registered to cognito
 
   // Context  - - - - - - - - - - - - - - - - - - - -- - - - - - - - - --
-  // Getting the function ro set email response from Context
-  const { setcognitoUser } = React.useContext(CognitoUserContext);
-  // Getting Input Context Value
+  const { setcognitoUser } = React.useContext(CognitoUserContext); // Getting the function ro set email response from Context
+
   const { inputData, handleOnTextChange, validationErrors } =
-    React.useContext(InputContext);
+    React.useContext(InputContext); // Getting Input Context Value
+
   // using use navigate hook for navigation to another pagfe
   const navigation = useNavigate();
 
@@ -61,7 +60,7 @@ const Login = () => {
       {/* Loader component */}
       {Loader && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-black bg-opacity-40">
-          <Spinner />
+          <MemoizedSpinner />
         </div>
       )}
 
@@ -128,4 +127,5 @@ const Login = () => {
   );
 };
 
-export default Login;
+const MemoizedLogin = React.memo(Login);
+export default MemoizedLogin;

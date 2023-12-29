@@ -5,18 +5,18 @@ const FundTabel = () => {
   return (
     <>
       <div
-        class="flex flex-col  md:flex-row items-center mx-4 md:mx-10 mb-4"
+        className="flex flex-col  md:flex-row items-center mx-4 md:mx-10 mb-4"
         style={{
           fontFamily: "'Arial', 'Helvetica Neue', Helvetica, sans-serif",
         }}
       >
-        <h2 class="text-2xl  text-black mx-4 mb-2 md:mb-0">
+        <h2 className="text-2xl  text-black mx-4 mb-2 md:mb-0">
           Recent Cancellation Requests
         </h2>
-        <div class="flex items-center">
-          <div class="w-2 h-2 bg-indigo-700 rounded-full"></div>
-          <div class="w-2 h-2 bg-indigo-700 rounded-full ml-1"></div>
-          <div class="w-2 h-2 bg-indigo-700 rounded-full ml-1"></div>
+        <div className="flex items-center">
+          <div className="w-2 h-2 bg-indigo-700 rounded-full"></div>
+          <div className="w-2 h-2 bg-indigo-700 rounded-full ml-1"></div>
+          <div className="w-2 h-2 bg-indigo-700 rounded-full ml-1"></div>
         </div>
       </div>
 
@@ -45,7 +45,7 @@ const FundTabel = () => {
                   <img
                     src={clockimg}
                     alt="Active Icon"
-                    class="icon  w-4 h-4 mr-2"
+                    className="icon  w-4 h-4 mr-2"
                   />
                 </span>
                 <span>12 Hours Ago</span>
@@ -65,7 +65,7 @@ const FundTabel = () => {
                   <img
                     src={clockimg}
                     alt="Active Icon"
-                    class="icon  w-4 h-4 mr-2"
+                    className="icon  w-4 h-4 mr-2"
                   />
                 </span>
                 <span>12 Hours Ago</span>
@@ -85,7 +85,7 @@ const FundTabel = () => {
                   <img
                     src={clockimg}
                     alt="Active Icon"
-                    class="icon  w-4 h-4 mr-2"
+                    className="icon  w-4 h-4 mr-2"
                   />
                 </span>
                 <span>12 Hours Ago</span>
@@ -105,7 +105,7 @@ const FundTabel = () => {
                   <img
                     src={clockimg}
                     alt="Active Icon"
-                    class="icon  w-4 h-4 mr-2"
+                    className="icon  w-4 h-4 mr-2"
                   />
                 </span>
                 <span>12 Hours Ago</span>
@@ -125,7 +125,7 @@ const FundTabel = () => {
                   <img
                     src={clockimg}
                     alt="Active Icon"
-                    class="icon  w-4 h-4 mr-2"
+                    className="icon  w-4 h-4 mr-2"
                   />
                 </span>
                 <span>12 Hours Ago</span>

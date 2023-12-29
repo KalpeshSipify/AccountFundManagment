@@ -3,40 +3,39 @@ import { InputContext } from "../../../Context/InputContext";
 import { CognitoUserContext } from "../../../Context/CognitoUserContext";
 import { VerifyOptHandler } from "../../../CognitoServices/VeryOtp";
 import loginImg from "../../assets/LoginImg.png";
-import Spinner from "../../Components/Spinner/Spinner";
 import { ReCallContext } from "../../../Context/ReCallContext";
 import { useNavigate } from "react-router-dom";
+import MemoizedSpinner from "../../Components/Spinner/Spinner";
+import { data } from "autoprefixer";
+import { CognitoUserIdContext } from "../../../Context/CognitoUserIdContext";
 
 const VerifyOpt = () => {
   // Hook for navigation
   const navigate = useNavigate();
   // State section
-  // State for spinner loader
-  const [Loader, setLoader] = React.useState(false);
-  //sate for Login Attempt
-  const [Attempt, setAttempt] = React.useState(0);
-  // State for button disable or enable
-  const [isButtonDisabled, setbisButtonDisabled] = React.useState(false);
 
-  // State for timer (180 seconds = 3 minutes)
-  const [time, setTime] = React.useState(180);
+  const [Loader, setLoader] = React.useState(false); // State for spinner loader
 
-  // state for email not registered to cognito
-  const [isValidOtp, setisValidOtp] = React.useState(true);
+  const [Attempt, setAttempt] = React.useState(0); //sate for Login Attempt
 
-  // Timer starts automatically
-  const [isActive, setIsActive] = React.useState(true);
+  const [isButtonDisabled, setbisButtonDisabled] = React.useState(false); // State for button disable or enable
+
+  const [time, setTime] = React.useState(180); // State for timer (180 seconds = 3 minutes)
+
+  const [isValidOtp, setisValidOtp] = React.useState(true); // state for email not registered to cognito
+
+  const [isActive, setIsActive] = React.useState(true); // Timer starts automatically
 
   // Context section
-  // Context for accessing 'setreCall' function from ReCallContext
-  const { setreCall } = React.useContext(ReCallContext);
 
-  // Context for accessing 'inputData' and 'handleOnTextChange' from InputContext
+  const { setreCall } = React.useContext(ReCallContext); // Context for accessing 'setreCall' function from ReCallContext
+
   const { inputData, handleOnTextChange, validationErrors } =
-    React.useContext(InputContext);
+    React.useContext(InputContext); // Context for accessing 'inputData' and 'handleOnTextChange' from InputContext
 
-  // Context for accessing 'cognitoUser' from CognitoUserContext
-  const { cognitoUser } = React.useContext(CognitoUserContext);
+  const { cognitoUser } = React.useContext(CognitoUserContext); // Context for accessing 'cognitoUser' from CognitoUserContext
+
+  const { setcognitoUserId } = React.useContext(CognitoUserIdContext); // Accessing setconitouserid fucntion from context of cognitouseridcontext
 
   // Triggering the useeffects on isactive or time changes
   // Timer logic
@@ -74,50 +73,54 @@ const VerifyOpt = () => {
   );
 
   // Handler for VeriyOpt
+  const HANDLE_VERIFY_OPT_DELAY = 1500; // Delay constant for timeouts
+
   const HandleVerifyOpt = React.useCallback(async () => {
-    setAttempt((prevAttempt) => prevAttempt + 1);
-    // if attempt is less than or equal to 3
-    if (Attempt <= 1) {
-      try {
-        setLoader(true); // Activate loader before verification
-
-        const { answer } = inputData; // Destructure the input data
-
-        const verifyOptResult = await VerifyOptHandler(cognitoUser, answer);
-        const { success } = verifyOptResult;
-
-        if (success) {
-          setreCall((prev) => !prev); // Toggle the recall flag for re-call
-
-          setTimeout(() => {
-            navigate("/User/Dashboard"); // Navigate after a delay upon successful verification
-            setLoader(false); // Deactivate loader after navigation
-          }, 1500); // Reduced delay for responsiveness
-        } else if (!success) {
-          setisValidOtp(false); // setting the isValidOtp  to false
-          // dealy for 1.5s
-          setTimeout(() => {
-            setisValidOtp(true); // setting the isValidOtp to true
-          }, 1500);
-          console.log("Internal Server Error!");
-        }
-      } catch (error) {
-        console.error(error); // Handle specific errors or log to a service
-      } finally {
-        setLoader(false); // Deactivate the loader after verification
-      }
-    } else {
-      // setting button to false state
-      setbisButtonDisabled(true);
+    // Check if attempts are more than 1, disable button
+    if (Attempt > 1) {
+      setbisButtonDisabled(true); // Disable button for more than 1 attempt
+      return; // Exit early for invalid attempts
     }
-  }, [Attempt, inputData, cognitoUser, setreCall, navigate]);
+
+    try {
+      setLoader(true); // Activate loader before verification
+
+      const { answer } = inputData; // Extract answer from input data
+      const verifyOptResult = await VerifyOptHandler(cognitoUser, answer); // Call verification function
+      const { success, Data } = verifyOptResult; // Destructure result
+
+      const { sub } = Data.attributes; // Extract user ID
+
+      if (success) {
+        setcognitoUserId(sub); // Set user ID
+        setreCall((prev) => !prev); // Toggle recall flag
+
+        setTimeout(() => {
+          navigate("/User/Dashboard"); // Navigate after a delay upon successful verification
+          setLoader(false); // Deactivate loader after navigation
+        }, HANDLE_VERIFY_OPT_DELAY); // Timeout for responsiveness
+      } else {
+        setisValidOtp(false); // Set OTP validity to false
+
+        setTimeout(() => {
+          setisValidOtp(true); // Set OTP validity back to true after delay
+        }, HANDLE_VERIFY_OPT_DELAY);
+
+        console.log("Failed to verify OTP."); // Log failure to verify OTP
+      }
+    } catch (error) {
+      console.error("Error:", error.message || "Internal Server Error!"); // Handle and log errors
+    } finally {
+      setLoader(false); // Deactivate loader after verification attempt
+    }
+  }, [Attempt, inputData, cognitoUser, setcognitoUserId, setreCall, navigate]);
 
   return (
     <>
       {/* Loader component */}
       {Loader && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-black bg-opacity-40">
-          <Spinner />
+          <MemoizedSpinner />
         </div>
       )}
 
@@ -201,4 +204,5 @@ const VerifyOpt = () => {
   );
 };
 
-export default VerifyOpt;
+const MemoizedVerifyOpt = React.memo(VerifyOpt);
+export default MemoizedVerifyOpt;

@@ -1,3 +1,5 @@
+import React from "react";
+
 // Spinner component for displaying a loading animation
 const Spinner = () => {
   return (
@@ -7,4 +9,5 @@ const Spinner = () => {
   );
 };
 
-export default Spinner;
+const MemoizedSpinner = React.memo(Spinner);
+export default MemoizedSpinner;

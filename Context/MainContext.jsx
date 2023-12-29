@@ -1,4 +1,6 @@
+import { MemoizedAppUpiFundFormDataProvider } from "./AppUpiFundFormDataContext";
 import { MemoizedCognitoUserProvider } from "./CognitoUserContext";
+import { MemoizedCognitoUserIdProvider } from "./CognitoUserIdContext";
 import { MemoizedInputProvider } from "./InputContext";
 import { MemoizedIsAuthenticateProvider } from "./IsAuthenticateContext";
 import { MemoizedReCallProvider } from "./ReCallContext";
@@ -14,7 +16,15 @@ export const MainContextProvider = ({ children }) => {
         {/* Provider for is Auth context */}
         <MemoizedIsAuthenticateProvider>
           {/* Provider for recall context */}
-          <MemoizedReCallProvider>{children}</MemoizedReCallProvider>
+          <MemoizedReCallProvider>
+            {/* Provider for Cognito user id ConText */}
+            <MemoizedCognitoUserIdProvider>
+              {/* provider for addupifundforminpoutdata  context */}
+              <MemoizedAppUpiFundFormDataProvider>
+                {children}
+              </MemoizedAppUpiFundFormDataProvider>
+            </MemoizedCognitoUserIdProvider>
+          </MemoizedReCallProvider>
         </MemoizedIsAuthenticateProvider>
       </MemoizedCognitoUserProvider>
     </MemoizedInputProvider>

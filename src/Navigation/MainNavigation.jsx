@@ -4,11 +4,11 @@ import PrivateRoute from "../../PrivateRoute/PrivateRoute"; // Importing Private
 import { getAuthenticatedUser } from "../../CognitoServices/GetCurrentAuthenticatUser"; // Importing function for fetching authenticated user
 import { IsAuthenticateContext } from "../../Context/IsAuthenticateContext"; // Importing IsAuthenticateContext
 import { ReCallContext } from "../../Context/ReCallContext"; // Importing ReCallContext
-import FundTabel from "../Components/FundTable/FundTabel";
-import Spinner from "../Components/Spinner/Spinner";
+import { CognitoUserIdContext } from "../../Context/CognitoUserIdContext";
+import MemoizedSpinner from "../Components/Spinner/Spinner";
 
 // Lazily loaded components
-const LoginPage = lazy(() => import("../Components/LoginPage/LoginPage"));
+const LoginPage = lazy(() => import("../Routes/Login/Login"));
 const VerifyOpt = lazy(() => import("../Routes/VerfyOpt/VerifyOpt"));
 const Dashboard = lazy(() => import("../Routes/DashBoard/Dashboard"));
 
@@ -20,19 +20,32 @@ const MainNavigation = () => {
 
   // Context  - - - - - - - - - - - - - - - - - - - -- - - - - - - - - --
   const { setIsAuth } = React.useContext(IsAuthenticateContext); // Accessing setIsAuth function from IsAuthenticateContext
+
   const { reCall } = React.useContext(ReCallContext); // Accessing reCall function from ReCallContext
+
+  const { setcognitoUserId } = React.useContext(CognitoUserIdContext); // Accessing setconitouserid fucntion from context of cognitouseridcontext
 
   // Function to get current authenticated user
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const GetUser = async () => {
-    const result = await getAuthenticatedUser(); // Fetching authenticated user details
-    const { success } = result; // Destructuring success from the result
-    if (success) {
-      setLoader(false); // setting loader to false
-      setIsAuth(true); // Setting isAuthenticated to true if user is authenticated
-      navigate("/User/Dashboard"); // Navigating to the Dashboard upon successful authentication
-    } else {
-      setLoader(false); // setting loader to false
+    try {
+      const result = await getAuthenticatedUser(); // Fetching authenticated user details
+      const { success, Data } = result; // Destructuring success from the result
+
+      if (Data) {
+        const { sub } = Data.attributes; // Destructuring sub from the data.attributes
+        setcognitoUserId(sub); // Setting cognito user id
+      }
+
+      if (success) {
+        setIsAuth(true); // Setting isAuthenticated to true if user is authenticated
+        navigate("/User/Dashboard"); // Navigating to the Dashboard upon successful authentication
+      }
+    } catch (error) {
+      console.error("Error fetching authenticated user:", error);
+      // You might want to perform additional error handling or logging here
+    } finally {
+      setLoader(false); // Setting loader to false after try-catch block execution
     }
   };
 
@@ -44,7 +57,7 @@ const MainNavigation = () => {
   if (Loader) {
     return (
       <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-black bg-opacity-40">
-        <Spinner />
+        <MemoizedSpinner />
       </div>
     );
   }
@@ -68,4 +81,5 @@ const MainNavigation = () => {
   );
 };
 
-export default MainNavigation;
+const MemoizedMainNavigation = React.memo(MainNavigation);
+export default MemoizedMainNavigation;

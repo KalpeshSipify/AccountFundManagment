@@ -2,23 +2,30 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IsAuthenticateContext } from "../../../Context/IsAuthenticateContext";
 import { LogOutHandler } from "../../../CognitoServices/SignOut";
-import Spinner from "../Spinner/Spinner";
 import chatimg from "../../assets/chat.png";
 import notificationimg from "../../assets/notification.png";
+import { AppUpiFundFormDataContext } from "../../../Context/AppUpiFundFormDataContext";
+import { CognitoUserIdContext } from "../../../Context/CognitoUserIdContext";
+import MemoizedSpinner from "../Spinner/Spinner";
 
 const Menu = () => {
   // using use navigate hook for navigation to another pagfe
   const navigation = useNavigate();
 
   //    state
-  //    state for resopnsive menu open
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  // State for spinner loader
-  const [Loader, setLoader] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false); //    state for resopnsive menu open
+
+  const [Loader, setLoader] = React.useState(false); // State for spinner loader
 
   //   context
-  //     Accessing constext of isAuthenticated user
-  const { setIsAuth } = React.useContext(IsAuthenticateContext);
+  const { setIsAuth } = React.useContext(IsAuthenticateContext); // Accessing constext of isAuthenticated user
+
+  const { setUpiFundFrominputData, UpiFundFrominputData } = React.useContext(
+    AppUpiFundFormDataContext
+  ); // Accessing context of upifundAcconnt inpued data context
+
+  const { cognitoUserId, setcognitoUserId } =
+    React.useContext(CognitoUserIdContext); // Accessing context of cognitouseridcontext
 
   // logout hangler function for cognito
   const HandleLogout = async () => {
@@ -33,6 +40,7 @@ const Menu = () => {
       if (success) {
         // dealy for responsive navigation for 1.5s
         setTimeout(() => {
+          setcognitoUserId(null); // set cognito user id to null
           setIsAuth(false); // set is auth to false to restrict router
           navigation("/Auth/login"); // navigate to login page
           setLoader(false); // setting loader to false
@@ -49,19 +57,32 @@ const Menu = () => {
     }
   };
 
+  const HandleSetUserID = () => {
+    // Destructuring
+    const { UserId } = UpiFundFrominputData;
+    //  if userid is Not set
+    if (!UserId) {
+      // Update the state using the updater function to ensure the correct previous state
+      setUpiFundFrominputData((prevState) => ({
+        ...prevState, // maintain previous state
+        UserId: cognitoUserId,
+      }));
+    }
+  };
+
   return (
     <>
       {/* Loader component */}
       {Loader && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-black bg-opacity-40">
-          <Spinner />
+          <MemoizedSpinner />
         </div>
       )}
       <div className="h-auto lg:min-h-screen flex flex-col lg:flex-row bg-white">
         <div className="lg:w-56 bg-white overflow-hidden">
-          <div className="flex items-center justify-between lg:items-center lg:h-20 shadow-md relative">
-            <h1 className="font-semibold text-2xl text-indigo-700 px-4 lg:px-0">
-              Self Help Dashboard
+          <div className="flex items-center justify-between lg:items-center lg:h-20 shadow-md relativ ">
+            <h1 className="font-semibold text-2xl text-indigo-700 px-4 lg:px-10 ">
+              Dashboard
             </h1>
             <div className="flex lg:hidden">
               <button
@@ -86,6 +107,21 @@ const Menu = () => {
                     <i className="bx bx-home"></i>
                   </span>
                   <span className="text-sm font-medium">
+                    <Link
+                      onClick={HandleSetUserID}
+                      to="/User/Dashboard/UpiFundAccount"
+                    >
+                      Add Upi Fund Account
+                    </Link>
+                  </span>
+                </div>
+              </li>
+              <li>
+                <div className="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
+                  <span className="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400">
+                    <i className="bx bx-home"></i>
+                  </span>
+                  <span className="text-sm font-medium">
                     <Link to="/User/Dashboard/Order">Order</Link>
                   </span>
                 </div>
@@ -96,7 +132,9 @@ const Menu = () => {
                     <i className="bx bx-home"></i>
                   </span>
                   <span className="text-sm font-medium">
-                    <Link to="/User/Dashboard/FundTable">Refund Request</Link>
+                    <Link to="/User/Dashboard/RecentCancellationRequest">
+                      Refund Request
+                    </Link>
                   </span>
                 </div>
               </li>
@@ -122,7 +160,7 @@ const Menu = () => {
               </li>
 
               <li>
-                <div className="flex  flex-row items-center  h-12  text-gray-500 hover:text-gray-800 mt-56">
+                <div className="flex flex-row items-center h-12 text-gray-500 hover:text-gray-800 mt-4 sm:mt-8 md:mt-16 lg:mt-56">
                   <div className="flex  px-14 ">
                     <div className="flex items-center justify-center h-12 w-9  ">
                       <img
